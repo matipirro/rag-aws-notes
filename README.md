@@ -81,6 +81,14 @@ ANTHROPIC_API_KEY=sk-ant-...
 CLAUDE_MODEL=claude-sonnet-5-5
 ```
 
+### Tests
+
+```bash
+python -m pytest -q
+```
+
+Cubren el troceo (`split_by_h2`, `split_by_h3`, `window_text` con un tokenizer falso), `answer()` con el retriever y el cliente de Claude simulados, y la validación de `/ask` (200, 400, 422, 502). No consumen API ni necesitan `chroma_db`.
+
 ### CLI
 
 ```bash
@@ -170,7 +178,6 @@ Fuentes:
 
 ## Próximos pasos
 
-- Tests con pytest: troceo (`split_by_h2`, `split_by_h3`, `window_text`), validación de `/ask` y el generator con un cliente de Claude simulado
 - Actualizar `anthropic` (ahora `0.60.0`) para pasar `output_config` como parámetro nativo en lugar de `extra_body`
 - Ajustar `k` y medir la calidad del retrieval con un set de preguntas tipo examen
 - Reingestar a medida que avance el curso (módulos 4-13)

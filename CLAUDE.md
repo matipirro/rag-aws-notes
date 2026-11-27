@@ -10,13 +10,18 @@ pip install -r requirements.txt
 
 # Indexar los apuntes en ./chroma_db
 python -m src.ingest data/AWS-Cloud-Practitioner-Notes.md
+
+# Tests (no llaman a Claude ni necesitan chroma_db)
+python -m pytest -q
 ```
 
 ## Architecture
 
-- **`src/ingest.py`**: lee el markdown, lo trocea por secciones H2, genera embeddings (all-MiniLM-L6-v2) y los guarda en ChromaDB persistente (`./chroma_db`).
-- **`src/retriever.py`**: `search(query, k=4)` devuelve los top-k chunks con score y la sección H2 de origen.
-- Pendiente: `src/generator.py` (Claude), `src/api.py` (FastAPI `/ask`), tests.
+- **`src/ingest.py`**: trocea el markdown por H2 → H3 → ventanas de 100 tokens (solape 25, título H3 como prefijo), genera embeddings (`paraphrase-multilingual-MiniLM-L12-v2`) y los guarda en ChromaDB persistente (`./chroma_db`).
+- **`src/retriever.py`**: `search(query, k=4)` devuelve los top-k chunks con score, sección H2 y subsección H3.
+- **`src/generator.py`**: `answer(query, k)` arma el prompt con el contexto y llama a Claude.
+- **`src/api.py`**: FastAPI `GET /ask`. **`cli.py`**: línea de comandos.
+- **`tests/`**: troceo, generator (cliente de Claude simulado) y validación de `/ask`.
 
 ## Reglas
 
